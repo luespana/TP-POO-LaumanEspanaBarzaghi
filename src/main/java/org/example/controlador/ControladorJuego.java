@@ -1,6 +1,7 @@
 package org.example.controlador;
 
 import org.example.app.GamePanel;
+import org.example.app.GameOverPanel;
 import org.example.app.GameWindow;
 import org.example.app.MenuPanel;
 import org.example.app.RankingPanel;
@@ -150,13 +151,18 @@ public class ControladorJuego {
                 juego.getRanking().agregarEntrada(nombre.trim(), nivelesSuperados, puntuacion);
             }
             
-            // Esperar 2 segundos antes de volver al menú usando Timer
-            Timer timer = new Timer(2000, e -> {
-                detenerBucle();
-                mostrarMenu();
-            });
-            timer.setRepeats(false);
-            timer.start();
+            // Detener el bucle del juego
+            detenerBucle();
+            
+            // Mostrar panel de Game Over con botones
+            GameOverPanel gameOverPanel = new GameOverPanel(puntuacion, nivelesSuperados);
+            gameOverPanel.agregarListenerVolverMenu(e -> mostrarMenu());
+            gameOverPanel.agregarListenerNuevaPartida(e -> comenzarNuevaPartida());
+            
+            window.getContentPane().removeAll();
+            window.getContentPane().add(gameOverPanel, BorderLayout.CENTER);
+            window.revalidate();
+            window.repaint();
         });
     }
 }
