@@ -1,4 +1,4 @@
-package org.example;
+package org.example.app;
 
 import org.example.controlador.ControladorJuego;
 
@@ -8,3 +8,4 @@ public class Main {
         controlador.iniciarJuego();
     }
 }
+

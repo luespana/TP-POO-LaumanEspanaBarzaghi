@@ -1,44 +1,29 @@
 package org.example.modelo;
 
 public class JugadorEnJuego {
-    private JugadorPerfil perfil;
     private int puntaje;
     private int vidas;
-    private int ubicacion;
-    private String direccion;
-    private NaveJugador nave;
-    private int bordeIzquierdo;
-    private int bordeDerecho;
-    
-    public void moverIzquierda() {
-        
+
+    public JugadorEnJuego() {
+        this.puntaje = 0;
+        this.vidas = 3;
     }
-    
-    public void moverDerecha() {
-        
+
+    public int getPuntaje() {
+        return puntaje;
     }
-    
-    public void disparar() {
-        
+
+    public void agregarPuntos(int puntos) {
+        this.puntaje += puntos;
     }
-    
-    public void verificarColision() {
-        
+
+    public int getVidas() {
+        return vidas;
     }
-    
-    public void recargar(int escudos, int cantidad) {
-        
-    }
-    
+
     public void perderVida() {
-        
+        if (vidas > 0) vidas--;
     }
-    
-    public void ganarVida() {
-        
-    }
-    
-    public void verificarDireccion() {
-        
-    }
+
+    public boolean sinVidas() { return vidas <= 0; }
 }
