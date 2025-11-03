@@ -4,6 +4,19 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Representa un muro de energía defensivo que protege al jugador.
+ * 
+ * <p>Los muros están compuestos por bloques individuales que pueden ser
+ * destruidos por impactos. Cada bloque tiene puntos de vida (HP) que se
+ * reducen con cada impacto hasta ser completamente destruido.
+ * 
+ * <p>Los muros se crean mediante un método estático de fábrica que divide
+ * el área en bloques pequeños para permitir destrucción parcial.
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public class MuroEnergia {
     private final List<Block> blocks;
 

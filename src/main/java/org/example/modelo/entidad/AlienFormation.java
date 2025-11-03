@@ -5,6 +5,23 @@ import org.example.modelo.Juego;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Gestiona el movimiento y comportamiento de la formación completa de enemigos.
+ * 
+ * <p>Esta clase implementa el comportamiento característico de Space Invaders:
+ * <ul>
+ *   <li>Movimiento horizontal en grupo con rebote en los bordes</li>
+ *   <li>Descenso gradual cuando la formación rebota</li>
+ *   <li>Velocidad que aumenta con el nivel y después de cada rebote</li>
+ *   <li>Disparos aleatorios desde las naves enemigas</li>
+ * </ul>
+ * 
+ * <p>Utiliza un patrón de diseño estático donde no se instancia la clase,
+ * sino que se usan métodos estáticos para gestionar la formación.
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public class AlienFormation {
     private static double direction = 1;
     private static double speed = 40;

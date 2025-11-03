@@ -6,6 +6,21 @@ import org.example.modelo.Juego;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Clase utilitaria que resuelve todas las colisiones en el juego.
+ * 
+ * <p>Gestiona las siguientes interacciones:
+ * <ul>
+ *   <li>Proyectiles del jugador con enemigos: elimina enemigo y proyectil, otorga puntos</li>
+ *   <li>Proyectiles del enemigo con el jugador: resta vida, reposiciona jugador</li>
+ *   <li>Proyectiles con muros de energía: destruye bloque del muro, elimina proyectil</li>
+ * </ul>
+ * 
+ * <p>Utiliza el patrón de diseño estático donde todos los métodos son estáticos.
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public class ResolverColisiones {
     public static void resolver(List<Proyectil> proyectiles,
                                 List<NaveEnemiga> enemigos,

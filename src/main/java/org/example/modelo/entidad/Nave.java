@@ -2,6 +2,22 @@ package org.example.modelo.entidad;
 
 import java.awt.*;
 
+/**
+ * Clase abstracta que representa una nave genérica en el juego.
+ * 
+ * <p>Proporciona la funcionalidad base para todas las naves:
+ * <ul>
+ *   <li>Posición y dimensiones</li>
+ *   <li>Método para obtener los límites (bounds) para detección de colisiones</li>
+ *   <li>Método abstracto para renderizado</li>
+ * </ul>
+ * 
+ * <p>Las clases hijas deben implementar el método render() para definir
+ * cómo se dibuja cada tipo de nave.
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public abstract class Nave {
     protected double x;
     protected double y;

@@ -8,6 +8,22 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Panel que muestra el ranking de las 5 mejores puntuaciones.
+ * 
+ * <p>Muestra una tabla con:
+ * <ul>
+ *   <li>Posición en el ranking</li>
+ *   <li>Nombre del jugador</li>
+ *   <li>Niveles superados</li>
+ *   <li>Puntuación obtenida</li>
+ * </ul>
+ * 
+ * <p>Incluye un botón para volver al menú principal.
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public class RankingPanel extends JPanel {
     private Ranking ranking;
     private JTable tablaRanking;

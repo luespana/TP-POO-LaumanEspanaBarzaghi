@@ -4,6 +4,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+/**
+ * Panel del menú principal del juego.
+ * 
+ * <p>Proporciona la interfaz inicial con:
+ * <ul>
+ *   <li>Título del juego</li>
+ *   <li>Botón para comenzar nueva partida</li>
+ *   <li>Botón para ver el ranking</li>
+ * </ul>
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public class MenuPanel extends JPanel {
     private JButton btnNuevaPartida;
     private JButton btnVerRanking;

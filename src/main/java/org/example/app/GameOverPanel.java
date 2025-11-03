@@ -4,6 +4,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+/**
+ * Panel que se muestra cuando termina la partida.
+ * 
+ * <p>Muestra:
+ * <ul>
+ *   <li>Mensaje "GAME OVER"</li>
+ *   <li>Puntuación obtenida</li>
+ *   <li>Niveles superados</li>
+ *   <li>Botones para volver al menú o comenzar nueva partida</li>
+ * </ul>
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public class GameOverPanel extends JPanel {
     private JButton btnVolverMenu;
     private JButton btnNuevaPartida;

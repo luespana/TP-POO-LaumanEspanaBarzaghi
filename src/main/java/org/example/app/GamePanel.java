@@ -9,6 +9,19 @@ import java.awt.event.KeyEvent;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Panel principal donde se renderiza y se controla el juego.
+ * 
+ * <p>Funcionalidades:
+ * <ul>
+ *   <li>Captura de entrada del teclado (movimiento y disparos)</li>
+ *   <li>Renderizado del juego mediante delegación a la clase Juego</li>
+ *   <li>Gestión de teclas presionadas usando ConcurrentHashMap para thread-safety</li>
+ * </ul>
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public class GamePanel extends JPanel {
     private final Juego juego;
     private final Set<Integer> pressedKeys = ConcurrentHashMap.newKeySet();

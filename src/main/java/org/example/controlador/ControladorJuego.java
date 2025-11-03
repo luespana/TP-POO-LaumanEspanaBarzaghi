@@ -10,6 +10,29 @@ import org.example.modelo.Juego;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Controlador principal que gestiona el flujo de la aplicación y coordina
+ * entre el modelo (Juego) y la vista (paneles de interfaz).
+ * 
+ * <p>Responsabilidades:
+ * <ul>
+ *   <li>Gestión del ciclo de vida de la aplicación</li>
+ *   <li>Coordinación entre diferentes paneles (menú, juego, ranking, game over)</li>
+ *   <li>Bucle de juego principal con actualización a 60 FPS</li>
+ *   <li>Detección de fin de partida y procesamiento del ranking</li>
+ *   <li>Gestión de hilos para el bucle de juego</li>
+ * </ul>
+ * 
+ * <p>Utiliza el patrón MVC (Modelo-Vista-Controlador) donde:
+ * <ul>
+ *   <li>Modelo: Clase Juego que contiene la lógica del juego</li>
+ *   <li>Vista: Paneles de Swing (MenuPanel, GamePanel, etc.)</li>
+ *   <li>Controlador: Esta clase que coordina todo</li>
+ * </ul>
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public class ControladorJuego {
     private final Juego juego;
     private GamePanel gamePanel;

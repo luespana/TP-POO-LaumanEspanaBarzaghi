@@ -5,6 +5,22 @@ import org.example.modelo.Juego;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Representa la nave controlada por el jugador.
+ * 
+ * <p>Gestiona:
+ * <ul>
+ *   <li>Movimiento horizontal (izquierda/derecha) con límites de pantalla</li>
+ *   <li>Sistema de disparo con cooldown para evitar spam de proyectiles</li>
+ *   <li>Renderizado como rectángulo verde</li>
+ * </ul>
+ * 
+ * <p>El movimiento se controla mediante teclas de flecha o WASD,
+ * y el disparo con la barra espaciadora.
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public class NaveJugador extends Nave {
     private final double speedPixelsPerSecond;
     private double cooldown;

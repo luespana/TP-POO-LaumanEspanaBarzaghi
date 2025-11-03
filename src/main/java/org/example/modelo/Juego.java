@@ -8,13 +8,40 @@ import java.util.List;
 import java.util.Set;
 import org.example.modelo.entidad.*;
 
+/**
+ * Clase principal que representa el estado y lógica del juego Space Invaders.
+ * 
+ * <p>Esta clase gestiona todos los aspectos del juego:
+ * <ul>
+ *   <li>Estado del juego (MENU, EN_JUEGO, TRANSICION_NIVEL, GAME_OVER)</li>
+ *   <li>Entidades del juego (nave del jugador, enemigos, proyectiles, muros)</li>
+ *   <li>Sistema de niveles progresivos</li>
+ *   <li>Sistema de puntuación y ranking</li>
+ *   <li>Renderizado del juego</li>
+ * </ul>
+ * 
+ * <p>El juego sigue un patrón de estados donde:
+ * <ul>
+ *   <li>MENU: Estado inicial del juego</li>
+ *   <li>EN_JUEGO: El jugador está jugando activamente</li>
+ *   <li>TRANSICION_NIVEL: Pantalla de transición entre niveles</li>
+ *   <li>GAME_OVER: El juego ha terminado</li>
+ * </ul>
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public class Juego {
+    /** Ancho de la ventana del juego en píxeles */
     public static final int WIDTH = 800;
+    /** Alto de la ventana del juego en píxeles */
     public static final int HEIGHT = 600;
 
     private String estado;
     private Partida partida;
-    private List<Nivel> niveles;
+    // Nota: La clase Nivel existe pero no se utiliza actualmente.
+    // El sistema de niveles funciona con nivelActual (int) y se incrementa dinámicamente.
+    // private List<Nivel> niveles; // Reservado para futuras mejoras
     private Ranking ranking;
     private final List<Proyectil> proyectiles;
     private JugadorEnJuego jugadorEnJuego;
@@ -24,8 +51,12 @@ public class Juego {
     private int nivelActual = 1;
     private double nivelMensajeTimer = 0; // segundos para mostrar "Nivel X" en pantalla negra
 
+    /**
+     * Constructor de la clase Juego.
+     * Inicializa todas las estructuras de datos necesarias y establece el estado inicial como MENU.
+     */
     public Juego() {
-        this.niveles = new ArrayList<>();
+        // this.niveles = new ArrayList<>(); // No se usa actualmente
         this.proyectiles = new ArrayList<>();
         this.ranking = new Ranking();
         this.enemigos = new ArrayList<>();
@@ -33,6 +64,19 @@ public class Juego {
         this.estado = "MENU";
     }
 
+    /**
+     * Inicializa una nueva partida desde cero.
+     * 
+     * <p>Este método:
+     * <ul>
+     *   <li>Reinicia el nivel a 1</li>
+     *   <li>Crea una nueva instancia de Partida y JugadorEnJuego</li>
+     *   <li>Inicializa la nave del jugador en el centro inferior</li>
+     *   <li>Crea los enemigos según el nivel actual</li>
+     *   <li>Coloca los muros de energía defensivos</li>
+     *   <li>Establece el estado a EN_JUEGO</li>
+     * </ul>
+     */
     public void inicializarPartida() {
         this.partida = new Partida();
         this.partida.iniciarPartida();
@@ -45,6 +89,18 @@ public class Juego {
         this.estado = "EN_JUEGO";
     }
 
+    /**
+     * Inicializa la formación de enemigos según el nivel actual.
+     * 
+     * <p>El número de filas de enemigos aumenta con el nivel:
+     * <ul>
+     *   <li>Nivel 1: 1 fila de enemigos</li>
+     *   <li>Cada nivel adicional agrega una fila hasta un máximo de 5 filas</li>
+     *   <li>Siempre se crean 11 columnas de enemigos</li>
+     * </ul>
+     * 
+     * <p>También reinicia la configuración de movimiento de AlienFormation.
+     */
     private void inicializarEnemigos() {
         enemigos.clear();
         int rows = Math.min(5, Math.max(1, nivelActual)); // Nivel 1: 1 fila; cada nivel agrega una fila hasta 5
@@ -63,6 +119,12 @@ public class Juego {
         AlienFormation.resetForLevel(nivelActual);
     }
 
+    /**
+     * Inicializa los muros de energía defensivos.
+     * 
+     * <p>Crea 4 muros de energía distribuidos horizontalmente en la parte inferior
+     * de la pantalla, sirviendo como protección para la nave del jugador.
+     */
     private void inicializarMuros() {
         muros.clear();
         int baseY = HEIGHT - 140;
@@ -72,6 +134,22 @@ public class Juego {
         }
     }
 
+    /**
+     * Actualiza el estado del juego en cada frame.
+     * 
+     * <p>Este método maneja:
+     * <ul>
+     *   <li>Transiciones entre niveles</li>
+     *   <li>Movimiento de la nave del jugador según las teclas presionadas</li>
+     *   <li>Movimiento y disparos de la formación de enemigos</li>
+     *   <li>Actualización de proyectiles</li>
+     *   <li>Resolución de colisiones</li>
+     *   <li>Verificación de condiciones de fin de juego o avance de nivel</li>
+     * </ul>
+     * 
+     * @param deltaSeconds Tiempo transcurrido desde el último frame en segundos
+     * @param pressedKeys Conjunto de códigos de teclas actualmente presionadas
+     */
     public void update(double deltaSeconds, Set<Integer> pressedKeys) {
         if ("TRANSICION_NIVEL".equals(estado)) {
             nivelMensajeTimer -= deltaSeconds;
@@ -113,6 +191,19 @@ public class Juego {
         }
     }
 
+    /**
+     * Renderiza el estado actual del juego en el contexto gráfico proporcionado.
+     * 
+     * <p>Dependiendo del estado del juego, renderiza:
+     * <ul>
+     *   <li>EN_JUEGO: Todas las entidades, HUD con puntuación, nivel y vidas</li>
+     *   <li>TRANSICION_NIVEL: Pantalla negra con mensaje del nivel</li>
+     *   <li>MENU: Mensaje de bienvenida</li>
+     *   <li>GAME_OVER: Mensaje de fin de juego con puntuación</li>
+     * </ul>
+     * 
+     * @param g Contexto gráfico donde se dibuja el juego
+     */
     public void render(Graphics2D g) {
         g.setColor(Color.black);
         g.fillRect(0, 0, WIDTH, HEIGHT);
@@ -166,22 +257,49 @@ public class Juego {
         }
     }
 
+    /**
+     * Obtiene el estado actual del juego.
+     * 
+     * @return Estado actual ("MENU", "EN_JUEGO", "TRANSICION_NIVEL", "GAME_OVER")
+     */
     public String getEstado() {
         return estado;
     }
 
+    /**
+     * Obtiene el nivel actual en el que se encuentra el jugador.
+     * 
+     * @return Número del nivel actual (1, 2, 3, ...)
+     */
     public int getNivelActual() {
         return nivelActual;
     }
 
+    /**
+     * Obtiene la puntuación actual del jugador en la partida.
+     * 
+     * @return Puntuación actual, o 0 si no hay partida activa
+     */
     public int getPuntaje() {
         return jugadorEnJuego != null ? jugadorEnJuego.getPuntaje() : 0;
     }
 
+    /**
+     * Obtiene la instancia del sistema de ranking.
+     * 
+     * @return Objeto Ranking que gestiona las puntuaciones más altas
+     */
     public Ranking getRanking() {
         return ranking;
     }
 
+    /**
+     * Calcula cuántos niveles fueron superados exitosamente.
+     * 
+     * <p>Si el jugador perdió en el nivel X, significa que superó X-1 niveles.
+     * 
+     * @return Número de niveles superados (0 o más)
+     */
     public int getNivelesSuperados() {
         // Los niveles superados son nivelActual - 1 (si perdiste en el nivel X, superaste X-1)
         return Math.max(0, nivelActual - 1);
