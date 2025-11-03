@@ -38,6 +38,8 @@ public class Juego {
         this.partida.iniciarPartida();
         this.jugadorEnJuego = new JugadorEnJuego();
         this.naveJugador = new NaveJugador(WIDTH / 2 - 20, HEIGHT - 80, 40, 20, 300);
+        this.nivelActual = 1; // Reiniciar nivel al inicio de cada partida
+        this.nivelMensajeTimer = 0;
         inicializarEnemigos();
         inicializarMuros();
         this.estado = "EN_JUEGO";
@@ -162,5 +164,26 @@ public class Juego {
             g.setFont(g.getFont().deriveFont(20f));
             g.drawString("Puntaje: " + jugadorEnJuego.getPuntaje(), WIDTH / 2 - 80, HEIGHT / 2 + 18);
         }
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public int getNivelActual() {
+        return nivelActual;
+    }
+
+    public int getPuntaje() {
+        return jugadorEnJuego != null ? jugadorEnJuego.getPuntaje() : 0;
+    }
+
+    public Ranking getRanking() {
+        return ranking;
+    }
+
+    public int getNivelesSuperados() {
+        // Los niveles superados son nivelActual - 1 (si perdiste en el nivel X, superaste X-1)
+        return Math.max(0, nivelActual - 1);
     }
 }

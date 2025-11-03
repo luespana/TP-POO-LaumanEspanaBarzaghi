@@ -3,6 +3,7 @@ package org.example.controlador;
 import org.example.app.GamePanel;
 import org.example.app.GameWindow;
 import org.example.app.MenuPanel;
+import org.example.app.RankingPanel;
 import org.example.modelo.Juego;
 
 import javax.swing.*;
@@ -16,6 +17,7 @@ public class ControladorJuego {
     private volatile boolean running = false;
     private boolean enJuego = false;
     private Thread gameThread;
+    private boolean gameOverProcesado = false;
 
     public ControladorJuego() {
         this.juego = new Juego();
@@ -43,6 +45,7 @@ public class ControladorJuego {
     private void comenzarNuevaPartida() {
         // Detener el bucle anterior si existe
         detenerBucle();
+        gameOverProcesado = false;
         
         SwingUtilities.invokeLater(() -> {
             gamePanel = new GamePanel(juego, Juego.WIDTH, Juego.HEIGHT);
@@ -72,8 +75,13 @@ public class ControladorJuego {
     }
 
     private void verRanking() {
-        // TODO: Implementar vista de ranking
-        JOptionPane.showMessageDialog(window, "Función de Ranking próximamente", "Ranking", JOptionPane.INFORMATION_MESSAGE);
+        RankingPanel rankingPanel = new RankingPanel(juego.getRanking());
+        rankingPanel.agregarListenerVolver(e -> mostrarMenu());
+        
+        window.getContentPane().removeAll();
+        window.getContentPane().add(rankingPanel, BorderLayout.CENTER);
+        window.revalidate();
+        window.repaint();
     }
 
     private void iniciarBucle() {
@@ -95,6 +103,12 @@ public class ControladorJuego {
                 if (gamePanel != null) {
                     juego.update(dt, gamePanel.getPressedKeys());
                     SwingUtilities.invokeLater(() -> gamePanel.repaint());
+                    
+                    // Verificar si el juego terminó
+                    if ("GAME_OVER".equals(juego.getEstado()) && !gameOverProcesado) {
+                        gameOverProcesado = true;
+                        procesarGameOver();
+                    }
                 }
 
                 long sleepNanos = (long) Math.max(0, (frameTime - dt) * 1_000_000_000L);
@@ -107,5 +121,42 @@ public class ControladorJuego {
         });
         gameThread.setDaemon(true);
         gameThread.start();
+    }
+
+    private void procesarGameOver() {
+        SwingUtilities.invokeLater(() -> {
+            int puntuacion = juego.getPuntaje();
+            int nivelesSuperados = juego.getNivelesSuperados();
+            
+            // Verificar si la puntuación entra en el ranking
+            if (juego.getRanking().esPuntuacionValida(puntuacion)) {
+                // Solicitar nombre al usuario
+                String nombre = JOptionPane.showInputDialog(
+                    window,
+                    "¡Felicidades! Tu puntuación está en el TOP 5.\n" +
+                    "Puntuación: " + puntuacion + "\n" +
+                    "Niveles superados: " + nivelesSuperados + "\n\n" +
+                    "Ingresa tu nombre:",
+                    "Nuevo Record",
+                    JOptionPane.PLAIN_MESSAGE
+                );
+                
+                // Si el usuario canceló o dejó vacío, usar un nombre por defecto
+                if (nombre == null || nombre.trim().isEmpty()) {
+                    nombre = "Jugador";
+                }
+                
+                // Agregar al ranking
+                juego.getRanking().agregarEntrada(nombre.trim(), nivelesSuperados, puntuacion);
+            }
+            
+            // Esperar 2 segundos antes de volver al menú usando Timer
+            Timer timer = new Timer(2000, e -> {
+                detenerBucle();
+                mostrarMenu();
+            });
+            timer.setRepeats(false);
+            timer.start();
+        });
     }
 }
