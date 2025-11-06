@@ -254,7 +254,9 @@ PERDER TODAS LAS VIDAS → GAME_OVER → (Ranking?) → MENU/NUEVA PARTIDA
 
 ## 👥 Autores
 
-LaumanEspanaBarzaghi
+Lucas Tadeo Garcia Lauman
+Lucia España
+Matias Barzaghi
 
 ## 📄 Licencia
 
