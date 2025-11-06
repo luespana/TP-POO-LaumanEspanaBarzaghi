@@ -11,8 +11,8 @@ import java.util.List;
  * <p>Gestiona:
  * <ul>
  *   <li>Movimiento horizontal (izquierda/derecha) con límites de pantalla</li>
- *   <li>Sistema de disparo con cooldown para evitar spam de proyectiles</li>
- *   <li>Renderizado como rectángulo verde</li>
+ *   <li>Sistema de disparo con cooldown mejorado (alta frecuencia de disparo)</li>
+ *   <li>Renderizado como nave triangular verde con cañón superior</li>
  * </ul>
  * 
  * <p>El movimiento se controla mediante teclas de flecha o WASD,
@@ -39,14 +39,30 @@ public class NaveJugador extends Nave {
         if (cooldown > 0) cooldown -= dt;
         if (shoot && cooldown <= 0) {
             proyectiles.add(Proyectil.playerBullet(x + width / 2.0 - 2, y - 10));
-            cooldown = 0.35;
+            cooldown = 0.15; // Aumentada frecuencia de disparo (antes 0.35)
         }
     }
 
     @Override
     public void render(Graphics2D g) {
+        int xInt = (int) x;
+        int yInt = (int) y;
+        
+        // Cuerpo principal de la nave (triángulo)
         g.setColor(Color.green);
-        g.fillRect((int) x, (int) y, width, height);
+        int[] xPoints = {xInt + width / 2, xInt, xInt + width};
+        int[] yPoints = {yInt, yInt + height, yInt + height};
+        g.fillPolygon(xPoints, yPoints, 3);
+        
+        // Cañón en la parte superior
+        int cañonWidth = 6;
+        int cañonHeight = 8;
+        g.setColor(new Color(0, 200, 0)); // Verde más claro para el cañón
+        g.fillRect(xInt + width / 2 - cañonWidth / 2, yInt - cañonHeight, cañonWidth, cañonHeight);
+        
+        // Detalles del cañón
+        g.setColor(new Color(0, 255, 0));
+        g.fillRect(xInt + width / 2 - 2, yInt - cañonHeight, 4, cañonHeight);
     }
 }
 

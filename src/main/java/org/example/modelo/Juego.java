@@ -78,15 +78,30 @@ public class Juego {
      * </ul>
      */
     public void inicializarPartida() {
+        // Limpiar todo el estado anterior
+        this.proyectiles.clear();
+        this.enemigos.clear();
+        this.muros.clear();
+        
+        // Reiniciar nivel y estado
+        this.nivelActual = 1;
+        this.nivelMensajeTimer = 0;
+        this.estado = "EN_JUEGO";
+        
+        // Crear nueva partida y jugador
         this.partida = new Partida();
         this.partida.iniciarPartida();
         this.jugadorEnJuego = new JugadorEnJuego();
+        
+        // Reiniciar nave del jugador en posición inicial
         this.naveJugador = new NaveJugador(WIDTH / 2 - 20, HEIGHT - 80, 40, 20, 300);
-        this.nivelActual = 1; // Reiniciar nivel al inicio de cada partida
-        this.nivelMensajeTimer = 0;
+        
+        // Reiniciar formación de enemigos (importante: resetear velocidad y dirección)
+        AlienFormation.resetForLevel(1);
+        
+        // Inicializar enemigos y muros
         inicializarEnemigos();
         inicializarMuros();
-        this.estado = "EN_JUEGO";
     }
 
     /**
@@ -211,27 +226,34 @@ public class Juego {
         if ("EN_JUEGO".equals(estado)) {
             naveJugador.render(g);
             for (NaveEnemiga e : enemigos) e.render(g);
+            
+            // Fondo para la franja de escudos
+            int escudosY = HEIGHT - 140;
+            int escudosHeight = 60;
+            g.setColor(new Color(20, 20, 40)); // Fondo oscuro azulado
+            g.fillRect(0, escudosY - 10, WIDTH, escudosHeight + 20);
+            
             for (MuroEnergia m : muros) m.render(g);
             for (Proyectil p : proyectiles) p.render(g);
 
-            // HUD más grande
+            // HUD reorganizado
             g.setColor(Color.white);
             g.setFont(g.getFont().deriveFont(20f));
             g.drawString("Score: " + jugadorEnJuego.getPuntaje(), 16, 28);
             g.drawString("Nivel: " + nivelActual, 16, 52);
-
-            // Vidas como círculos grandes en la esquina superior derecha
+            
+            // Vidas debajo del nivel
             int circles = jugadorEnJuego.getVidas();
             int size = 16;
             int pad = 6;
-            int cx = WIDTH - 20;
-            int cy = 14;
+            int startX = 16;
+            int startY = 76; // Debajo del nivel (52 + 24)
             for (int i = 0; i < circles; i++) {
-                int x = cx - i * (size + pad);
+                int x = startX + i * (size + pad);
                 g.setColor(Color.green);
-                g.fillOval(x, cy, size, size);
+                g.fillOval(x, startY, size, size);
                 g.setColor(Color.white);
-                g.drawOval(x, cy, size, size);
+                g.drawOval(x, startY, size, size);
             }
 
         } else if ("TRANSICION_NIVEL".equals(estado)) {
