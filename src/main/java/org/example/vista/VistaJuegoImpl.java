@@ -3,9 +3,9 @@ package org.example.vista;
 import org.example.app.GamePanel;
 
 import java.awt.Component;
-import java.awt.Graphics2D;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
+import org.example.modelo.EstadoJuegoDTO;
 
 /**
  * Implementación concreta de IVistaJuego que envuelve GamePanel.
@@ -26,8 +26,8 @@ class VistaJuegoImpl implements IVistaJuego {
     }
     
     @Override
-    public void setRenderCallback(Consumer<Graphics2D> callback) {
-        gamePanel.setRenderCallback(callback);
+    public void setProveedorEstado(Supplier<EstadoJuegoDTO> proveedorEstado) {
+        gamePanel.setProveedorEstado(proveedorEstado);
     }
     
     @Override

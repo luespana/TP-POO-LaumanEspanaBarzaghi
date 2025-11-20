@@ -52,6 +52,38 @@ public class MuroEnergia {
         return false;
     }
 
+    /**
+     * Obtiene los bloques del muro para renderizado.
+     * 
+     * @return Lista de bloques con sus datos (x, y, width, height, hp)
+     */
+    public List<BloqueDatos> getBloques() {
+        List<BloqueDatos> resultado = new ArrayList<>();
+        for (Block b : blocks) {
+            resultado.add(new BloqueDatos(b.x, b.y, b.w, b.h, b.hp));
+        }
+        return resultado;
+    }
+    
+    /**
+     * Clase de datos para exponer información de los bloques sin exponer la clase interna.
+     */
+    public static class BloqueDatos {
+        private final int x, y, w, h, hp;
+        public BloqueDatos(int x, int y, int w, int h, int hp) {
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.hp = hp;
+        }
+        public int getX() { return x; }
+        public int getY() { return y; }
+        public int getWidth() { return w; }
+        public int getHeight() { return h; }
+        public int getHp() { return hp; }
+    }
+    
     private static class Block {
         int x, y, w, h, hp;
         Block(int x, int y, int w, int h, int hp) { this.x = x; this.y = y; this.w = w; this.h = h; this.hp = hp; }

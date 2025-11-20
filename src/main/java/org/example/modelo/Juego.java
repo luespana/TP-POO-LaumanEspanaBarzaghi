@@ -326,4 +326,87 @@ public class Juego {
         // Los niveles superados son nivelActual - 1 (si perdiste en el nivel X, superaste X-1)
         return Math.max(0, nivelActual - 1);
     }
+    
+    /**
+     * Obtiene el estado actual del juego como DTO para renderizado.
+     * Este método permite que la vista obtenga los datos necesarios sin conocer
+     * las clases internas del modelo.
+     * 
+     * @return EstadoJuegoDTO con todos los datos necesarios para renderizar
+     */
+    public EstadoJuegoDTO obtenerEstadoParaRenderizado() {
+        // Datos de la nave del jugador
+        EstadoJuegoDTO.DatosNaveJugador datosNaveJugador = null;
+        if (naveJugador != null) {
+            datosNaveJugador = new EstadoJuegoDTO.DatosNaveJugador(
+                naveJugador.getX(), 
+                naveJugador.getY(), 
+                naveJugador.getWidth(), 
+                naveJugador.getHeight()
+            );
+        }
+        
+        // Datos de los enemigos
+        List<EstadoJuegoDTO.DatosNaveEnemiga> datosEnemigos = new ArrayList<>();
+        if (enemigos != null) {
+            for (NaveEnemiga enemigo : enemigos) {
+                datosEnemigos.add(new EstadoJuegoDTO.DatosNaveEnemiga(
+                    enemigo.getX(),
+                    enemigo.getY(),
+                    enemigo.getWidth(),
+                    enemigo.getHeight()
+                ));
+            }
+        }
+        
+        // Datos de los proyectiles
+        List<EstadoJuegoDTO.DatosProyectil> datosProyectiles = new ArrayList<>();
+        if (proyectiles != null) {
+            for (Proyectil p : proyectiles) {
+                datosProyectiles.add(new EstadoJuegoDTO.DatosProyectil(
+                    p.getX(),
+                    p.getY(),
+                    4, // width
+                    10, // height
+                    p.isFromPlayer()
+                ));
+            }
+        }
+        
+        // Datos de los muros
+        List<EstadoJuegoDTO.DatosMuro> datosMuros = new ArrayList<>();
+        if (muros != null) {
+            for (MuroEnergia muro : muros) {
+                for (MuroEnergia.BloqueDatos bloque : muro.getBloques()) {
+                    datosMuros.add(new EstadoJuegoDTO.DatosMuro(
+                        bloque.getX(),
+                        bloque.getY(),
+                        bloque.getWidth(),
+                        bloque.getHeight(),
+                        bloque.getHp()
+                    ));
+                }
+            }
+        }
+        
+        // Datos del HUD
+        EstadoJuegoDTO.DatosHUD datosHUD = null;
+        if (jugadorEnJuego != null) {
+            datosHUD = new EstadoJuegoDTO.DatosHUD(
+                jugadorEnJuego.getPuntaje(),
+                nivelActual,
+                jugadorEnJuego.getVidas()
+            );
+        }
+        
+        return new EstadoJuegoDTO(
+            estado,
+            datosNaveJugador,
+            datosEnemigos,
+            datosProyectiles,
+            datosMuros,
+            datosHUD,
+            nivelActual
+        );
+    }
 }

@@ -57,6 +57,7 @@ public class Proyectil {
         g.fillRect((int) x, (int) y, width, height);
     }
 
+    public double getX() { return x; }
     public double getY() { return y; }
 }
 

@@ -1,9 +1,8 @@
 package org.example.vista;
 
+import org.example.modelo.EstadoJuegoDTO;
 import java.awt.Component;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.awt.Graphics2D;
 
 /**
  * Interfaz que define los métodos necesarios para la vista del juego.
@@ -21,11 +20,13 @@ public interface IVistaJuego {
     Set<Integer> getPressedKeys();
     
     /**
-     * Establece el callback de renderizado que será llamado cuando la vista necesite renderizar.
+     * Establece el proveedor de estado del juego.
+     * La vista llamará a este proveedor cuando necesite renderizar para obtener
+     * los datos actuales del juego.
      * 
-     * @param callback Función que recibe un Graphics2D para renderizar el juego
+     * @param proveedorEstado Función que retorna el estado actual del juego
      */
-    void setRenderCallback(Consumer<Graphics2D> callback);
+    void setProveedorEstado(java.util.function.Supplier<EstadoJuegoDTO> proveedorEstado);
     
     /**
      * Solicita que la vista se repinte.

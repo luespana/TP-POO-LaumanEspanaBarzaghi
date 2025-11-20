@@ -52,9 +52,7 @@ src/main/java/org/example/
 │       ├── MuroEnergia.java    # Muros defensivos
 │       ├── AlienFormation.java # Gestión de formación enemiga
 │       └── ResolverColisiones.java  # Sistema de colisiones
-│
-└── enums/                  # Enumeraciones
-    └── Dificultad.java     # Niveles de dificultad (futuro)
+
 ```
 
 ## ⚙️ Funcionalidades

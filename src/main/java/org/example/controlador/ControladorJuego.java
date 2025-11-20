@@ -68,7 +68,7 @@ public class ControladorJuego {
         
         SwingUtilities.invokeLater(() -> {
             vistaJuego = VistaFactory.crearVistaJuego(Juego.WIDTH, Juego.HEIGHT);
-            vistaJuego.setRenderCallback(g -> juego.render(g));
+            vistaJuego.setProveedorEstado(() -> juego.obtenerEstadoParaRenderizado());
             vistaPrincipal.setContenido(vistaJuego.getComponent());
             vistaJuego.requestFocusInWindow();
         });
