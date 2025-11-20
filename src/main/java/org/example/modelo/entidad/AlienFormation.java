@@ -34,10 +34,23 @@ public class AlienFormation {
         stepDown = 2; // baja fina por rebote
     }
 
+
+    /**
+     * Actualiza la formación de enemigos y maneja los disparos aleatorios.
+     * 
+     * Gestiona el movimiento horizontal de la formación, el rebote en los bordes,
+     * el descenso gradual y la generación de disparos aleatorios desde las naves enemigas.
+     * 
+     * @param enemigos Lista de enemigos en la formación
+     * @param dt Tiempo delta entre frames
+     * @param proyectiles Lista de proyectiles generados
+     */
     public static void update(List<NaveEnemiga> enemigos, double dt, List<Proyectil> proyectiles) {
+        // Si no hay enemigos, no hay nada que actualizar
         if (enemigos.isEmpty()) return;
         double dx = speed * direction * dt;
 
+        // Calcular los bordes de la formación
         double minX = Double.MAX_VALUE;
         double maxX = -Double.MAX_VALUE;
         for (NaveEnemiga e : enemigos) {
@@ -45,17 +58,22 @@ public class AlienFormation {
             maxX = Math.max(maxX, e.x + e.width);
         }
 
+        // Verificar si la formación ha chocado con los bordes
         boolean hitLeft = (minX + dx) < 10;
         boolean hitRight = (maxX + dx) > (Juego.WIDTH - 10);
 
+        // Si la formación ha chocado con los bordes, rebotar
         if (hitLeft || hitRight) {
             // Rebotar: bajar un poco y cambiar dirección, sin salirse del borde
             direction *= -1;
             for (NaveEnemiga e : enemigos) {
                 e.y += stepDown;
             }
+            // Aumentar la velocidad de la formación
+            // Si la velocidad es mayor que 260, no aumentarla más
             speed = Math.min(260, speed + 6);
         } else {
+            // Si no ha chocado con los bordes, mover la formación lateralmente
             // Movimiento lateral normal
             for (NaveEnemiga e : enemigos) {
                 e.x += dx;

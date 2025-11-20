@@ -1,14 +1,8 @@
 package org.example.controlador;
 
-import org.example.app.GamePanel;
-import org.example.app.GameOverPanel;
-import org.example.app.GameWindow;
-import org.example.app.MenuPanel;
-import org.example.app.RankingPanel;
 import org.example.modelo.Juego;
-
+import org.example.vista.*;
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * Controlador principal que gestiona el flujo de la aplicación y coordina
@@ -26,18 +20,22 @@ import java.awt.*;
  * <p>Utiliza el patrón MVC (Modelo-Vista-Controlador) donde:
  * <ul>
  *   <li>Modelo: Clase Juego que contiene la lógica del juego</li>
- *   <li>Vista: Paneles de Swing (MenuPanel, GamePanel, etc.)</li>
- *   <li>Controlador: Esta clase que coordina todo</li>
+ *   <li>Vista: Interfaces (IVistaJuego, IVistaMenu, etc.) que abstraen las implementaciones concretas</li>
+ *   <li>Controlador: Esta clase que coordina todo sin conocer las clases concretas de vista</li>
  * </ul>
+ * 
+ * <p>El controlador respeta el principio de inversión de dependencias al trabajar exclusivamente
+ * con interfaces de vista, obtenidas a través de VistaFactory. Esto permite cambiar las implementaciones
+ * de vista sin modificar el controlador.
  * 
  * @author LaumanEspanaBarzaghi
  * @version 1.0
  */
 public class ControladorJuego {
     private final Juego juego;
-    private GamePanel gamePanel;
-    private MenuPanel menuPanel;
-    private GameWindow window;
+    private IVistaJuego vistaJuego;
+    private IVistaMenu vistaMenu;
+    private IVistaPrincipal vistaPrincipal;
     private volatile boolean running = false;
     private boolean enJuego = false;
     private Thread gameThread;
@@ -49,21 +47,18 @@ public class ControladorJuego {
 
     public void iniciar() {
         SwingUtilities.invokeLater(() -> {
-            window = new GameWindow("Space Invaders", null, Juego.WIDTH, Juego.HEIGHT);
+            vistaPrincipal = VistaFactory.crearVistaPrincipal("Space Invaders", Juego.WIDTH, Juego.HEIGHT);
             mostrarMenu();
-            window.setVisible(true);
+            vistaPrincipal.setVisible(true);
         });
     }
 
     private void mostrarMenu() {
-        menuPanel = new MenuPanel();
-        window.getContentPane().removeAll();
-        window.getContentPane().add(menuPanel, BorderLayout.CENTER);
-        window.revalidate();
-        window.repaint();
+        vistaMenu = VistaFactory.crearVistaMenu();
+        vistaPrincipal.setContenido(vistaMenu.getComponent());
         
-        menuPanel.agregarListenerNuevaPartida(e -> comenzarNuevaPartida());
-        menuPanel.agregarListenerVerRanking(e -> verRanking());
+        vistaMenu.agregarListenerNuevaPartida(e -> comenzarNuevaPartida());
+        vistaMenu.agregarListenerVerRanking(e -> verRanking());
     }
 
     private void comenzarNuevaPartida() {
@@ -72,12 +67,10 @@ public class ControladorJuego {
         gameOverProcesado = false;
         
         SwingUtilities.invokeLater(() -> {
-            gamePanel = new GamePanel(juego, Juego.WIDTH, Juego.HEIGHT);
-            window.getContentPane().removeAll();
-            window.getContentPane().add(gamePanel, BorderLayout.CENTER);
-            window.revalidate();
-            window.repaint();
-            gamePanel.requestFocusInWindow();
+            vistaJuego = VistaFactory.crearVistaJuego(Juego.WIDTH, Juego.HEIGHT);
+            vistaJuego.setRenderCallback(g -> juego.render(g));
+            vistaPrincipal.setContenido(vistaJuego.getComponent());
+            vistaJuego.requestFocusInWindow();
         });
 
         juego.inicializarPartida();
@@ -99,13 +92,10 @@ public class ControladorJuego {
     }
 
     private void verRanking() {
-        RankingPanel rankingPanel = new RankingPanel(juego.getRanking());
-        rankingPanel.agregarListenerVolver(e -> mostrarMenu());
+        IVistaRanking vistaRanking = VistaFactory.crearVistaRanking(juego.getRanking());
+        vistaRanking.agregarListenerVolver(e -> mostrarMenu());
         
-        window.getContentPane().removeAll();
-        window.getContentPane().add(rankingPanel, BorderLayout.CENTER);
-        window.revalidate();
-        window.repaint();
+        vistaPrincipal.setContenido(vistaRanking.getComponent());
     }
 
     private void iniciarBucle() {
@@ -124,9 +114,9 @@ public class ControladorJuego {
                 double dt = (now - last) / 1_000_000_000.0;
                 last = now;
 
-                if (gamePanel != null) {
-                    juego.update(dt, gamePanel.getPressedKeys());
-                    SwingUtilities.invokeLater(() -> gamePanel.repaint());
+                if (vistaJuego != null) {
+                    juego.update(dt, vistaJuego.getPressedKeys());
+                    SwingUtilities.invokeLater(() -> vistaJuego.repaint());
                     
                     // Verificar si el juego terminó
                     if ("GAME_OVER".equals(juego.getEstado()) && !gameOverProcesado) {
@@ -156,7 +146,7 @@ public class ControladorJuego {
             if (juego.getRanking().esPuntuacionValida(puntuacion)) {
                 // Solicitar nombre al usuario
                 String nombre = JOptionPane.showInputDialog(
-                    window,
+                    vistaPrincipal.getComponent(),
                     "¡Felicidades! Tu puntuación está en el TOP 5.\n" +
                     "Puntuación: " + puntuacion + "\n" +
                     "Niveles superados: " + nivelesSuperados + "\n\n" +
@@ -178,14 +168,11 @@ public class ControladorJuego {
             detenerBucle();
             
             // Mostrar panel de Game Over con botones
-            GameOverPanel gameOverPanel = new GameOverPanel(puntuacion, nivelesSuperados);
-            gameOverPanel.agregarListenerVolverMenu(e -> mostrarMenu());
-            gameOverPanel.agregarListenerNuevaPartida(e -> comenzarNuevaPartida());
+            IVistaGameOver vistaGameOver = VistaFactory.crearVistaGameOver(puntuacion, nivelesSuperados);
+            vistaGameOver.agregarListenerVolverMenu(e -> mostrarMenu());
+            vistaGameOver.agregarListenerNuevaPartida(e -> comenzarNuevaPartida());
             
-            window.getContentPane().removeAll();
-            window.getContentPane().add(gameOverPanel, BorderLayout.CENTER);
-            window.revalidate();
-            window.repaint();
+            vistaPrincipal.setContenido(vistaGameOver.getComponent());
         });
     }
 }

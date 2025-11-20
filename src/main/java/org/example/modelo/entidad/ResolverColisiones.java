@@ -43,6 +43,7 @@ public class ResolverColisiones {
             }
             if (eliminado) continue;
 
+            // Colisiones con enemigos
             if (p.isFromPlayer()) {
                 for (int e = enemigos.size() - 1; e >= 0; e--) {
                     if (pb.intersects(enemigos.get(e).getBounds())) {
@@ -53,7 +54,7 @@ public class ResolverColisiones {
                         break;
                     }
                 }
-            } else {
+            } else { // Colisiones con jugador
                 if (pb.intersects(jugador.getBounds())) {
                     estadoJugador.perderVida();
                     proyectiles.remove(i);

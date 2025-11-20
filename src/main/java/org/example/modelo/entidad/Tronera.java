@@ -2,6 +2,14 @@ package org.example.modelo.entidad;
 
 import java.awt.*;
 
+/**
+ * Representa una tronera en el juego.
+ * 
+ * Es decir, los escudos que protegen la nave del jugador.
+ * 
+ * @author LaumanEspanaBarzaghi
+ * @version 1.0
+ */
 public class Tronera {
     private double x;
     private double y;
